@@ -51,20 +51,28 @@ function getMostPopularBooks(books) {
 
 
 function getMostPopularAuthors(books, authors) {
-  let popularAuthors = [];
-  let count = 0;
-  authors.forEach(author => {
-    let authorName = `${author.name.first} ${author.name.last}`;
-    books.forEach(book => {
-      if (author.id === book.authorId) {
-        let count = book.borrows.length;
-        let authorObject = {name: authorName, count: count};
-        popularAuthors.push(authorObject);
-      }
-    });
-  }); 
-  return topFive(popularAuthors);
+  const authorList = books.reduce((acc, book) => { 
+    
+    const { authorId, borrows } = book;
+    const authorObj = authors.find(author => author.id === authorId);
+    const name = `${authorObj.name.first} ${authorObj.name.last}`;
+    //console.log(name)
+    console.log("this is my test", acc)
+    
+     const count = borrows.length;
+    
+     const authExists = acc.find(auth => auth.name === name);
+   if(authExists) { authExists.count += count;
+   } else {  
+     const newAuthEntry = { name, count };
+     
+     acc.push(newAuthEntry);
+   }
+     return acc;
+ }, []);
+  return topFive(authorList);
 }
+
 
 
 module.exports = {
